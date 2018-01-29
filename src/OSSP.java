@@ -9,12 +9,13 @@ public class OSSP {
 	private static boolean duplicatable = false;
 	private static boolean readDueDate = false;
 
+	private static String inputFile;
 	private static String outputFile = "result.txt";
 
 	public static void main(String[] args) throws Exception {
 		CheckSyntax(args);
 
-		if (!(osspIO.readData(args[0], readDueDate))) {
+		if (!(osspIO.readData(inputFile, readDueDate))) {
 			return;
 		}
 
@@ -48,9 +49,8 @@ public class OSSP {
 		if (args.length < 1) {
 			System.err.println("Usage: OSSP <InputFileName>[ <Option>]\n");
 			System.exit(1);
-		} else if (args.length >= 2) {
-
-			for (int k = 1; k < args.length; k++) {
+		} else {
+			for (int k = 0; k < args.length; k++) {
 				try {
 					if ("-o".equals(args[k])) {
 						outputFile = args[++k];
@@ -68,9 +68,11 @@ public class OSSP {
 						duplicatable = !duplicatable;
 					} else if ("-due".equals(args[k])) {
 						readDueDate = !readDueDate;
+					} else if ("-h".equals(args[k])) {
+						showSyntax();
+						System.exit(0);
 					} else {
-						System.err.println("想定されていないコマンドです．" + args[k]);
-						System.exit(1);
+						inputFile = args[k];
 					}
 				} catch (Exception e) {
 					System.err.println("想定されていないコマンドです．\n" + e);
@@ -80,6 +82,23 @@ public class OSSP {
 
 		}
 
+	}
+
+	private static void showSyntax() {
+		System.out.println("Usage: OSSP <inputFile> [<Options>]\n");
+
+		System.out.println("Options　スイッチ一覧");
+		System.out.println("-o <outputFile>\n\t <outputFile>に結果を出力する．");
+		System.out.println("-NP <PopCount> \n\t 個体数を<PopCount>に設定する."
+				+ "（デフォルト：100）");
+		System.out.println("-NN <PopCount> \n\t 近傍個体数と個体数の和を<PopCount>に設定する."
+				+ "（デフォルト：2100）");
+		System.out.println("-t <Integer> \n \t 遺伝子操作を行う回数を<Integer>にする．（デフォルト：1000）");
+		System.out.println("-pc <realNumber> \n\t 交叉確率を<realNumber>にする．（デフォルト：0.8）");
+		System.out.println("-pm <realNumber> \n\t 突然変異確率を<realNumber>にする．（デフォルト：0.05）");
+		System.out.println("-dup\n\t ガントチャートに同時に同じ仕事の複数の作業の割り当てを可能にします．（デフォルト：無効）");
+		System.out.println("-due\n\t 入力ファイルから同時に納期も読み込む．（デフォルト：無効）");
+		System.out.println("-h\n\t ヘルプを見せる．");
 	}
 
 }
