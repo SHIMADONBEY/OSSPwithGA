@@ -36,8 +36,7 @@ public class OSSPWithGA {
 
 		System.out.println("ˆâ“`“IƒAƒ‹ƒSƒŠƒYƒ€");
 
-		Individuals parents = new Individuals(mProcessTime, mPopCount, mCrossOverRate,
-				mMutationRate);
+		Individuals parents = new Individuals(mProcessTime, mPopCount);
 
 		/* ‰ŠúŒÂ‘ÌŒQ¶¬ */
 		parents.generateGene();
@@ -54,18 +53,17 @@ public class OSSPWithGA {
 
 			/* Œğ³ */
 			for (i = 0; i < N_pop; i += 2) {
-				parents.crossover(pairOrder[i], pairOrder[i + 1], mProcessTime.getJobCount(),
-						mProcessTime.getResourceCount());
+				parents.crossover(mCrossOverRate, pairOrder[i], pairOrder[i + 1]);
 			}
 
 			/* •ÏˆÙ */
 			for (Chromosome chromosome : parents.getChromosome()) {
-				chromosome.mutate();
+				chromosome.mutate(mMutationRate);
 			}
 
 			/* ‹ß–T‚Ì¶¬ */
 			children = null;
-			children = new Individuals(mProcessTime, mNeighborCount, p_c, p_m);
+			children = new Individuals(mProcessTime, mNeighborCount);
 			children.setElite(parents.getElite());
 			children.generateNeighbor(parents);
 
@@ -78,7 +76,7 @@ public class OSSPWithGA {
 
 			/* ŒÂ‘ÌŒQ‚Ì¶‚«c‚è */
 			parents = null;
-			parents = new Individuals(mProcessTime, mPopCount, p_c, p_m);
+			parents = new Individuals(mProcessTime, mPopCount);
 			parents.survive(children);
 
 			System.out.printf("%4d \t %g\n", t, parents.getElite().getFitness());
